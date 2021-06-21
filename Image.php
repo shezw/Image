@@ -2,7 +2,6 @@
 
 namespace Gregwar\Image;
 
-use Gregwar\Cache\CacheInterface;
 use Gregwar\Image\Adapter\AdapterInterface;
 use Gregwar\Image\Exceptions\GenerationError;
 
@@ -23,7 +22,7 @@ use Gregwar\Image\Exceptions\GenerationError;
  * @method Image crop($x, $y, $width, $height)
  * @method Image enableProgressive()
  * @method Image force($width = null, $height = null, $background = 0xffffff)
- * @method Image zoomCrop($width, $height, $background = 0xffffff, $xPos, $yPos)
+ * @method Image zoomCrop($width, $height, $background = 0xffffff, $xPos='center', $yPos='center')
  * @method Image fillBackground($background = 0xffffff)
  * @method Image negate()
  * @method Image brightness($brightness)
@@ -106,7 +105,7 @@ class Image
     /**
      * Use fallback image.
      */
-    protected $useFallbackImage = true;
+    protected $useFallbackImage = false;
 
     /**
      * Cache system.
@@ -463,7 +462,7 @@ class Image
      * @param string $type    the image type
      * @param int    $quality the quality (for JPEG)
      */
-    public function cacheFile($type = 'jpg', $quality = 80, $actual = false)
+    public function cacheFile($type = 'jpg', $quality = 80, $actual = false):string
     {
         if ($type == 'guess') {
             $type = $this->guessType();
@@ -661,10 +660,11 @@ class Image
 
         $type = self::$types[$type];
 
+        var_dump($type);
+        var_dump($file);
         try {
             $this->init();
             $this->applyOperations();
-
             $success = false;
 
             if (null == $file) {
